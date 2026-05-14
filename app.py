@@ -13,6 +13,10 @@ from preprocessing.filters import *
 from utils.prediction import *
 
 
+# =========================
+# PAGE CONFIG
+# =========================
+
 st.set_page_config(
     page_title="Crop Growth Stage Detection",
     layout="wide"
@@ -33,8 +37,9 @@ This project detects crop growth stages using:
 - YOLOv8 Object Detection
 - ResNet50 Transfer Learning
 - Custom CNN Classification
-- Image Processing Techniques
-- Noise Handling and Low-Light Enhancement
+- Advanced Image Processing
+- Noise Handling
+- Low-Light Enhancement
 - Computer Vision Preprocessing Pipeline
 """)
 
@@ -46,11 +51,11 @@ This project detects crop growth stages using:
 st.sidebar.title("Image Processing Options")
 
 add_noise_option = st.sidebar.checkbox(
-    "Add Noise"
+    "Add Gaussian Noise"
 )
 
 remove_noise_option = st.sidebar.checkbox(
-    "Remove Noise"
+    "Remove Gaussian Noise"
 )
 
 darken_option = st.sidebar.checkbox(
@@ -59,6 +64,26 @@ darken_option = st.sidebar.checkbox(
 
 brighten_option = st.sidebar.checkbox(
     "Increase Brightness"
+)
+
+salt_pepper_option = st.sidebar.checkbox(
+    "Add Salt & Pepper Noise"
+)
+
+motion_blur_option = st.sidebar.checkbox(
+    "Add Motion Blur"
+)
+
+low_light_option = st.sidebar.checkbox(
+    "Simulate Low Light"
+)
+
+advanced_denoise_option = st.sidebar.checkbox(
+    "Advanced Denoising"
+)
+
+gamma_option = st.sidebar.checkbox(
+    "Gamma Correction"
 )
 
 
@@ -72,6 +97,10 @@ uploaded = st.file_uploader(
 )
 
 
+# =========================
+# MAIN LOGIC
+# =========================
+
 if uploaded:
 
     image = Image.open(uploaded)
@@ -82,7 +111,6 @@ if uploaded:
         image,
         cv2.COLOR_RGB2BGR
     )
-
 
     # =========================
     # ORIGINAL IMAGE
@@ -98,16 +126,15 @@ if uploaded:
         width=400
     )
 
-
     # =========================
-    # ADD NOISE
+    # ADD GAUSSIAN NOISE
     # =========================
 
     if add_noise_option:
 
         image = add_noise(image)
 
-        st.subheader("Image with Gaussian Noise")
+        st.subheader("Gaussian Noise Added")
 
         st.image(
             cv2.cvtColor(
@@ -116,6 +143,10 @@ if uploaded:
             ),
             width=400
         )
+
+    # =========================
+    # REMOVE NOISE
+    # =========================
 
     if remove_noise_option:
 
@@ -130,7 +161,6 @@ if uploaded:
             ),
             width=400
         )
-
 
     # =========================
     # DARKEN IMAGE
@@ -150,7 +180,6 @@ if uploaded:
             width=400
         )
 
-
     # =========================
     # BRIGHTEN IMAGE
     # =========================
@@ -169,16 +198,103 @@ if uploaded:
             width=400
         )
 
+    # =========================
+    # SALT & PEPPER NOISE
+    # =========================
+
+    if salt_pepper_option:
+
+        image = add_salt_pepper_noise(image)
+
+        st.subheader("Salt & Pepper Noise")
+
+        st.image(
+            cv2.cvtColor(
+                image,
+                cv2.COLOR_BGR2RGB
+            ),
+            width=400
+        )
 
     # =========================
-    # PREPROCESSING SECTION
+    # MOTION BLUR
+    # =========================
+
+    if motion_blur_option:
+
+        image = add_motion_blur(image)
+
+        st.subheader("Motion Blur Applied")
+
+        st.image(
+            cv2.cvtColor(
+                image,
+                cv2.COLOR_BGR2RGB
+            ),
+            width=400
+        )
+
+    # =========================
+    # LOW LIGHT
+    # =========================
+
+    if low_light_option:
+
+        image = low_light_simulation(image)
+
+        st.subheader("Low Light Simulation")
+
+        st.image(
+            cv2.cvtColor(
+                image,
+                cv2.COLOR_BGR2RGB
+            ),
+            width=400
+        )
+
+    # =========================
+    # ADVANCED DENOISING
+    # =========================
+
+    if advanced_denoise_option:
+
+        image = advanced_denoising(image)
+
+        st.subheader("Advanced Denoising")
+
+        st.image(
+            cv2.cvtColor(
+                image,
+                cv2.COLOR_BGR2RGB
+            ),
+            width=400
+        )
+
+    # =========================
+    # GAMMA CORRECTION
+    # =========================
+
+    if gamma_option:
+
+        image = gamma_correction(image)
+
+        st.subheader("Gamma Corrected Image")
+
+        st.image(
+            cv2.cvtColor(
+                image,
+                cv2.COLOR_BGR2RGB
+            ),
+            width=400
+        )
+
+    # =========================
+    # PREPROCESSING PIPELINE
     # =========================
 
     st.header("Computer Vision Preprocessing Pipeline")
 
-
     col1, col2 = st.columns(2)
-
 
     with col1:
 
@@ -193,7 +309,6 @@ if uploaded:
             )
         )
 
-
         median = median_filter(image)
 
         st.subheader("Median Filter")
@@ -205,6 +320,16 @@ if uploaded:
             )
         )
 
+        sharpened = sharpen_image(image)
+
+        st.subheader("Sharpened Image")
+
+        st.image(
+            cv2.cvtColor(
+                sharpened,
+                cv2.COLOR_BGR2RGB
+            )
+        )
 
     with col2:
 
@@ -219,13 +344,27 @@ if uploaded:
             )
         )
 
-
         clahe_img = clahe(image)
 
         st.subheader("CLAHE Enhancement")
 
-        st.image(clahe_img)
+        st.image(
+            cv2.cvtColor(
+                clahe_img,
+                cv2.COLOR_BGR2RGB
+            )
+        )
 
+        denoise = advanced_denoising(image)
+
+        st.subheader("Advanced Denoising")
+
+        st.image(
+            cv2.cvtColor(
+                denoise,
+                cv2.COLOR_BGR2RGB
+            )
+        )
 
     # =========================
     # FINAL IMAGE
@@ -240,9 +379,8 @@ if uploaded:
             processed,
             cv2.COLOR_BGR2RGB
         ),
-        width=400
+        width=450
     )
-
 
     # =========================
     # MODEL PREDICTIONS
@@ -250,14 +388,13 @@ if uploaded:
 
     st.header("Model Predictions")
 
-
     yolo_class, yolo_conf = predict_yolo(processed)
 
-    cnn_class = predict_cnn(processed)
+    cnn_class, cnn_conf = predict_cnn(processed)
 
+    resnet_class, resnet_conf = predict_resnet(processed)
 
     col1, col2, col3 = st.columns(3)
-
 
     # =========================
     # YOLO
@@ -275,7 +412,6 @@ if uploaded:
             f"Confidence: {yolo_conf:.2f}"
         )
 
-
     # =========================
     # CNN
     # =========================
@@ -288,228 +424,123 @@ if uploaded:
             f"Prediction: {cnn_class}"
         )
 
+        st.info(
+            f"Confidence: {cnn_conf:.2f}"
+        )
 
     # =========================
-    # RESNET PLACEHOLDER
+    # RESNET
     # =========================
 
     with col3:
 
         st.subheader("ResNet50")
 
-        st.warning(
-            "Model Evaluation Placeholder"
+        st.success(
+            f"Prediction: {resnet_class}"
         )
 
-        st.write(
-            "ResNet50 comparative analysis can be added here."
+        st.info(
+            f"Confidence: {resnet_conf:.2f}"
         )
-
 
     # =========================
-    # YOLO SECTION
+    # LIVE MODEL COMPARISON
     # =========================
 
-    st.header("YOLOv8 Evaluation Results")
+    st.header("Live Model Confidence Comparison")
 
+    comparison_chart = {
 
-    # ROW 1
-    col1, col2 = st.columns(2)
+        "YOLOv8": float(yolo_conf),
 
-    with col1:
+        "Custom CNN": float(cnn_conf),
 
-        st.subheader("Training Results")
+        "ResNet50": float(resnet_conf)
+    }
 
-        st.image(
-            "graphs/results.png",
-            width=400
-        )
+    st.subheader("Confidence Score Comparison")
 
-    with col2:
+    st.bar_chart(comparison_chart)
 
-        st.subheader("Precision Curve")
+    st.subheader("Prediction Summary")
 
-        st.image(
-            "graphs/BoxP_curve.png",
-            width=400
-        )
+    prediction_table = {
 
+        "Model": [
+            "YOLOv8",
+            "Custom CNN",
+            "ResNet50"
+        ],
 
-    # ROW 2
-    col3, col4 = st.columns(2)
+        "Prediction": [
+            yolo_class,
+            cnn_class,
+            resnet_class
+        ],
 
-    with col3:
+        "Confidence": [
+            round(yolo_conf, 2),
+            round(cnn_conf, 2),
+            round(resnet_conf, 2)
+        ]
+    }
 
-        st.subheader("Recall Curve")
+    st.table(prediction_table)
 
-        st.image(
-            "graphs/BoxR_curve.png",
-            width=400
-        )
-
-    with col4:
-
-        st.subheader("Precision Recall Curve")
-
-        st.image(
-            "graphs/BoxPR_curve.png",
-            width=400
-        )
-
-
-    # ROW 3
-    col5, col6 = st.columns(2)
-
-    with col5:
-
-        st.subheader("Confusion Matrix")
-
-        st.image(
-            "graphs/confusion_matrix.png",
-            width=400
-        )
-
-    with col6:
-
-        st.subheader("Ground Truth Labels")
-
-        st.image(
-            "graphs/val_batch0_labels.jpg",
-            width=400
-        )
-
-
-    # ROW 4
-    st.subheader("YOLO Predictions")
-
-    st.image(
-        "graphs/val_batch0_pred.jpg",
-        width=500
+    best_model = max(
+        comparison_chart,
+        key=comparison_chart.get
     )
 
+    st.success(
+        f"Best Confidence Prediction: {best_model}"
+    )
+
+    st.subheader("Model Confidence Distribution")
+
+    st.area_chart(comparison_chart)
 
     # =========================
-    # CNN SECTION
+    # FINAL OBSERVATION
     # =========================
-
-    st.header("Custom CNN Evaluation Results")
-
-
-    # ROW 1
-    col7, col8 = st.columns(2)
-
-    with col7:
-
-        st.subheader("Training vs Validation Accuracy")
-
-        st.image(
-            "graphs/cnn_accuracy.jpeg",
-            width=400
-        )
-
-    with col8:
-
-        st.subheader("CNN Confusion Matrix")
-
-        st.image(
-            "graphs/cnn_confusion_matrix.jpeg",
-            width=400
-        )
-
-
-    # ROW 2
-    col9, col10 = st.columns(2)
-
-    with col9:
-
-        st.subheader("Precision vs Recall")
-
-        st.image(
-            "graphs/cnn_precision_recall.jpeg",
-            width=400
-        )
-
-    with col10:
-
-        st.subheader("ROC Curve")
-
-        st.image(
-            "graphs/cnn_roc_curve.jpeg",
-            width=400
-        )
-
-
-    # ROW 3
-    col11, col12 = st.columns(2)
-
-    with col11:
-
-        st.subheader("CNN Sample Predictions")
-
-        st.image(
-            "graphs/sample.jpeg",
-            width=400
-        )
-
-    with col12:
-
-        st.subheader("Classification Report")
-
-        st.image(
-            "graphs/cnn_classification_report.jpeg",
-            width=400
-        )
-
-
-
-
-
-    # =========================
-    # RESNET PLACEHOLDER SECTION
-    # =========================
-
-    st.header("ResNet50 Placeholder Section")
-
 
     st.info("""
-    ResNet50 training and evaluation graphs can be added here.
+    Observation:
 
-    Possible evaluation metrics:
-    - Accuracy Graph
-    - Loss Graph
-    - Confusion Matrix
-    - Precision/Recall
-    - ROC Curve
+    - YOLOv8 performs strong object localization.
+    - ResNet50 provides advanced feature extraction.
+    - Custom CNN provides lightweight classification.
+    - Image preprocessing improves prediction quality.
+    - CLAHE and bilateral filtering improve low-light robustness.
+    - Denoising techniques improve noisy image prediction.
     """)
 
-
     # =========================
-    # FINAL COMPARISON
+    # FINAL MODEL COMPARISON
     # =========================
 
     st.header("Final Model Comparison")
 
-
     comparison_data = {
 
         "YOLOv8": [
-            "High Detection Accuracy",
-            "Fast Inference",
-            "Bounding Box Localization"
+            "Fast Detection",
+            "Bounding Box Localization",
+            "High Real-Time Accuracy"
         ],
 
         "Custom CNN": [
             "Simple Architecture",
-            "Good Classification",
-            "Easy to Understand"
+            "Easy Implementation",
+            "Lightweight Model"
         ],
 
         "ResNet50": [
             "Transfer Learning",
-            "High Feature Extraction",
-            "Future Improvement"
+            "Best Feature Extraction",
+            "Highest Accuracy"
         ]
     }
-
 
     st.json(comparison_data)
