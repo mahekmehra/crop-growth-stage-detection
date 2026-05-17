@@ -501,9 +501,86 @@ if uploaded:
 
     st.area_chart(comparison_chart)
 
-    # =========================
-    # FINAL OBSERVATION
-    # =========================
+    st.header("Model Training Results Comparison")
+    col18,col19,col20 = st.columns(3)
+    with col18:
+        st.subheader("YOLOv8 Results")
+        st.image("graphs/yolo_results.png",width=400)
+    with col19:
+        st.subheader("Custom CNN Results")
+        st.image("graphs/customcnn_results.png",width=400)
+    with col20:
+        st.subheader("ResNet50 Results")
+        st.image("graphs/resnet_results.png",width=400)
+
+
+    # ========================= # YOLO SECTION # ========================= 
+    st.header("YOLOv8 Evaluation Results") 
+    col1, col2 = st.columns(2) 
+    with col1: 
+        st.subheader("Training Results") 
+        st.image( "graphs/results.png", width=400 ) 
+    with col2: 
+        st.subheader("Precision Curve") 
+        st.image( "graphs/BoxP_curve.png", width=400 ) # 
+    col3, col4 = st.columns(2) 
+    with col3: 
+        st.subheader("Recall Curve") 
+        st.image( "graphs/BoxR_curve.png", width=400 ) 
+    with col4: 
+        st.subheader("Precision Recall Curve") 
+        st.image( "graphs/BoxPR_curve.png", width=400 )  
+    col5, col6 = st.columns(2) 
+    with col5: 
+        st.subheader("Ground Truth Labels") 
+        st.image( "graphs/val_batch0_labels.jpg", width=400 ) 
+    with col6:
+        st.subheader("YOLO Predictions")
+        st.image( "graphs/val_batch0_pred.jpg", width=400 ) 
+        
+    # ========================= # CNN SECTION # ========================= 
+    st.header("Custom CNN Evaluation Results")  
+    col7, col8 = st.columns(2) 
+    with col7: 
+        st.subheader("Training vs Validation Accuracy") 
+        st.image( "graphs/cnn_accuracy.jpeg", width=400 ) 
+    with col8: 
+        st.subheader("CNN Confusion Matrix") 
+        st.image( "graphs/customcnn_confusion.png", width=400 ) 
+    col9, col10 = st.columns(2) 
+    with col9: 
+        st.subheader("Precision vs Recall") 
+        st.image( "graphs/cnn_pr.png", width=400 ) 
+    with col10: 
+        st.subheader("ROC Curve") 
+        st.image( "graphs/cnn_roc.png", width=400 ) 
+    col11, col12 = st.columns(2) 
+    with col11: 
+        st.subheader("CNN Sample Predictions") 
+        st.image( "graphs/sample.jpeg", width=400 ) 
+    with col12: 
+        st.subheader("Classification Report") 
+        st.image( "graphs/cnn_classification.png", width=400 ) 
+        
+    # ========================= # RESNET PLACEHOLDER SECTION # ========================= 
+    st.header("ResNet50 Evaluation Results") 
+    col13, col14 = st.columns(2) 
+    with col13: 
+        st.subheader("Training vs Validation Accuracy") 
+        st.image( "graphs/resnet_accuracy.jpeg", width=400 ) 
+    with col14: 
+        st.subheader("Resnet Confusion Matrix") 
+        st.image( "graphs/resnet_confusion.png", width=400 ) 
+    col15, col16, col17 = st.columns(3) 
+    with col15: 
+        st.subheader("Precision vs Recall") 
+        st.image( "graphs/resnet_pr.png", width=400 ) 
+    with col16: 
+        st.subheader("ROC Curve") 
+        st.image( "graphs/resnet_roc.png", width=400 ) 
+    with col17: 
+        st.subheader("Resnet Classification Report") 
+        st.image( "graphs/resnet_classification.png", width=400 )  
 
     st.info("""
     Observation:
@@ -516,31 +593,43 @@ if uploaded:
     - Denoising techniques improve noisy image prediction.
     """)
 
+
+
     # =========================
     # FINAL MODEL COMPARISON
     # =========================
 
-    st.header("Final Model Comparison")
+    
 
-    comparison_data = {
+    col21,col22 = st.columns(2)
 
-        "YOLOv8": [
-            "Fast Detection",
-            "Bounding Box Localization",
-            "High Real-Time Accuracy"
-        ],
+    with col21:
 
-        "Custom CNN": [
-            "Simple Architecture",
-            "Easy Implementation",
-            "Lightweight Model"
-        ],
+        st.header("Final Model Comparison")
 
-        "ResNet50": [
-            "Transfer Learning",
-            "Best Feature Extraction",
-            "Highest Accuracy"
-        ]
-    }
+        comparison_data = {
 
-    st.json(comparison_data)
+            "YOLOv8": [
+                "Fast Detection",
+                "Bounding Box Localization",
+                "High Real-Time Accuracy"
+            ],
+
+            "Custom CNN": [
+                "Simple Architecture",
+                "Easy Implementation",
+                "Lightweight Model"
+            ],
+
+            "ResNet50": [
+                "Transfer Learning",
+                "Best Feature Extraction",
+                "Highest Accuracy"
+            ]
+        }
+
+        st.json(comparison_data)
+
+    with col22:
+        st.header("Comparison Graph")
+        st.image("graphs/comparison.png",width= 600)
